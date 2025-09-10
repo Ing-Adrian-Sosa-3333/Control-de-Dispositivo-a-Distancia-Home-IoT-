@@ -12,14 +12,16 @@
 #include "addons/RTDBHelper.h"
 
 // Insert your network credentials
-#define WIFI_SSID "******"
-#define WIFI_PASSWORD "*******"
+#define WIFI_SSID "****"
+#define WIFI_PASSWORD "***************"
 
 // Insert Firebase project API Key
-#define API_KEY "*****************************************"
+#define API_KEY "******************************************"
 
 // Insert RTDB URL
-#define DATABASE_URL "**************************************************"
+#define DATABASE_URL "*********************.firebaseio.com"
+
+#define NomDispositivo "Garaje-IoT-1"
 
 // Define Firebase Data object
 FirebaseData fbdo;
@@ -98,7 +100,7 @@ void loop() {
   }
 
   if (Firebase.ready() && signupOK) {
-    if (Firebase.RTDB.getString(&fbdo, "/L1")) {
+    if (Firebase.RTDB.getString(&fbdo, "/2/L1")) {
       if (fbdo.dataType() == "int") {
         sValue = fbdo.intData();
         Serial.println(sValue);
@@ -112,7 +114,11 @@ void loop() {
     else {
       Serial.println(fbdo.errorReason());
     }
-
+    
+    // Almacenar el nombre del dispositivo
+    Firebase.RTDB.setString(&fbdo, "/2/id",NomDispositivo);
+    Serial.println(NomDispositivo);
+    
     // Lectura del sensor ultrasónico
     digitalWrite(trigPin, LOW);
     delayMicroseconds(2);
@@ -137,6 +143,7 @@ void loop() {
     }
 
     // Almacenar el estado de L2
-    Firebase.RTDB.setInt(&fbdo, "/L2", estadoActual);
+    Firebase.RTDB.setInt(&fbdo, "/2/L2", estadoActual);
+    
   }
 }
